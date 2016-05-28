@@ -27,7 +27,7 @@
 
 #define mu_run_test(test)           \
   do {                              \
-    printf("\n-----%s\n", " " #test); \
+    printf("\n-----%s", " " #test); \
     message = test();               \
     tests_run++;                    \
     if (message) return message;    \
@@ -39,8 +39,8 @@
     tests_run = 0;                                      \
     printf("----\nRUNNING: %s\n", argv[0]);             \
     char *result = name();                              \
-    if (result != 0) printf("FAILED: %s\n", result);    \
-    else printf("ALL TESTS PASSED\n");                  \
+    if (result != 0) printf("\nFAILED: %s\n", result);    \
+    else printf("\nALL TESTS PASSED\n");                  \
     printf("Tests run: %d\n", tests_run);               \
     exit(result == 0 ? EXIT_SUCCESS : EXIT_FAILURE);    \
   }

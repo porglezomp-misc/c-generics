@@ -1,7 +1,7 @@
 #include "minunit.h"
 #include <stdbool.h>
 
-char *passing_test(void) {
+char *trivial_test(void) {
   mu_assert(true, "This test should pass");
   return NULL;
 }
@@ -9,7 +9,7 @@ char *passing_test(void) {
 char *test_suite(void) {
   mu_suite_start();
 
-  mu_run_test(passing_test);
+  mu_run_test(trivial_test);
 
   return NULL;
 }
