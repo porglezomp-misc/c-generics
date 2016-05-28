@@ -3,16 +3,14 @@
 
 #include <stdbool.h>
 
-#ifndef STACK_BLOCK_SIZE
 #define STACK_BLOCK_SIZE 32
-#endif
-
-typedef struct {
+typedef struct stack_block {
   int elements[STACK_BLOCK_SIZE];
+  struct stack_block *prev_block;
   struct stack_block *next_block;
 } stack_block;
 
-typedef struct {
+typedef struct stack {
   int index;
   stack_block *block;
 } stack;
