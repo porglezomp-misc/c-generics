@@ -25,7 +25,7 @@ void stack_free(stack *s) {
 int stack_pop(stack *s) {
   if (s->index == -1) return 0;
   int value = s->block->elements[s->index--];
-  if (s->index < 0) {
+  if (s->index < 0 && s->block->prev_block) {
     s->block = s->block->prev_block;
     s->index = STACK_BLOCK_SIZE-1;
   }
@@ -43,4 +43,8 @@ void stack_push(stack *s, int value) {
     s->index = -1;
   }
   s->block->elements[++s->index] = value;
+}
+
+bool stack_is_empty(stack *s) {
+  return s->index == -1;
 }

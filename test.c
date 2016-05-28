@@ -43,11 +43,34 @@ char *test_push_pop(void) {
   return NULL;
 }
 
+char *test_empty(void) {
+  stack s;
+  stack_init(&s);
+  mu_assert(stack_is_empty(&s), "Stacks should be initially empty");
+  stack_push(&s, 42);
+  mu_assert(!stack_is_empty(&s), "Stack not empty with one item in it");
+  stack_pop(&s);
+  mu_assert(stack_is_empty(&s), "Stack should be empty with all items popped");
+
+  for (int i = 0; i < STACK_BLOCK_SIZE*2; i++) {
+    stack_push(&s, i);
+    mu_assert(!stack_is_empty(&s), "Stack should not be empty with lots of items");
+  }
+  for (int i = 0; i < STACK_BLOCK_SIZE*2; i++) {
+    mu_assert(!stack_is_empty(&s), "Stack should not be empty with lots of items");
+    stack_pop(&s);
+  }
+  mu_assert(stack_is_empty(&s), "Stack should be empty again");
+
+  return NULL;
+}
+
 char *test_suite(void) {
   mu_suite_start();
 
   mu_run_test(test_creation);
   mu_run_test(test_push_pop);
+  mu_run_test(test_empty);
 
   return NULL;
 }
