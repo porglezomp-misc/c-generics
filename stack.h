@@ -23,6 +23,5 @@ void stack_free(stack *);
 bool stack_is_empty(stack *);
 int stack_pop(stack *);
 void stack_push(stack *, int);
-bool stack_push_prealloc(stack *, int, stack_block *);
 
 #endif
