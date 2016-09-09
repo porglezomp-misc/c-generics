@@ -1,11 +1,22 @@
 #ifndef TYPE
-#error "Please #define TYPE before including rc_impl.c"
+#error Please #define TYPE before including rc_impl.c
 // This is included to get better error messages while writing this file
 #define TYPE int
 #endif
 
-#include "rc.h"
+#pragma push_macro("TYPE")
+#ifdef TYPE_HEADER
+#include TYPE_HEADER
+#endif
+#pragma pop_macro("TYPE")
+
+#ifndef NO_INCLUDE_IMPL
 #include "rc_impl.h"
+#else
+#undef NO_INCLUDE_IMPL
+#endif
+
+#include "rc.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -13,6 +24,7 @@
 struct rc_cell(TYPE) {
   TYPE value;
   intptr_t count;
+  void (*destructor)(rc(TYPE) ref);
 };
 
 rc(TYPE) rc_empty(TYPE)() {
@@ -25,32 +37,33 @@ rc(TYPE) rc_alloc(TYPE)() {
   return (rc(TYPE)) { cell };
 }
 
-void rc_free(TYPE)(rc(TYPE) *ref) {
-  ref->content->count--;
-  if (ref->content->count <= 0) {
-    free(ref->content);
+void rc_free(TYPE)(rc(TYPE) ref) {
+  if (rc_is_empty(TYPE)(ref)) { return; }
+  ref.content->count--;
+  if (ref.content->count <= 0) {
+    free(ref.content);
   }
 }
 
-void rc_incref(TYPE)(rc(TYPE) *ref) {
+void rc_incref(TYPE)(rc(TYPE) ref) {
   if (rc_is_empty(TYPE)(ref)) { return; }
-  ref->content->count++;
+  ref.content->count++;
 }
 
 rc(TYPE) rc_make(TYPE)(TYPE val) {
   rc(TYPE) ref = rc_alloc(TYPE)();
-  rc_set(TYPE)(&ref, val);
+  rc_set(TYPE)(ref, val);
   return ref;
 }
 
-void rc_set(TYPE)(rc(TYPE) *ref, TYPE val) {
-  ref->content->value = val;
+void rc_set(TYPE)(rc(TYPE) ref, TYPE val) {
+  ref.content->value = val;
 }
 
-TYPE rc_get(TYPE)(rc(TYPE) *ref) {
-  return ref->content->value;
+TYPE rc_get(TYPE)(rc(TYPE) ref) {
+  return ref.content->value;
 }
 
-bool rc_is_empty(TYPE)(rc(TYPE) *ref) {
-  return ref->content == NULL;
+bool rc_is_empty(TYPE)(rc(TYPE) ref) {
+  return ref.content == NULL;
 }
